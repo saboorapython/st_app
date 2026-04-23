@@ -42,37 +42,12 @@ if select == "Home":
 elif select == "Player Analysis":
     
     st.title("Player Analysis")
-
     player = st.selectbox("Select Player",df["Player"])
-
-    pdata = df[df["Player"]==player].reset_index()
-
-    values=pdata[["100","50","4s","6s"]].iloc[0]
-
-    fig=px.bar(
-        x=values,
-        y=values.index
-    )
-
-
-    fig.update_xaxes(range=[0,values.max()+20])
-
-
-    #stats=["100","50","4s","6s"]
-
-    #chart_data = (
-        #pdata[stats]
-        #.iloc[0]
-        #.reset_index()
-   # )
-
-   # chart_data.columns = ["Stat","Value"]
-
-   # fig=px.bar(
-        #chart_data,
-       # x="Stat",
-       # y="Value"
-    #)
+    pdata = df[df["Player"]==player]
+    df2=pdata[["Runs","Matches","Inns","6s","4s","100","50","Ave","High_score"]]
+    df2=df2.T.reset_index()
+    st.dataframe(df2)
+    fig=px.bar(df2,x="index",y=df2.columns[1],color="index")
 
 
     col4,col5,col6,col7=st.columns(4)
@@ -106,12 +81,21 @@ elif select == "Player Analysis":
 elif select == "Country Insights":
 
     st.title("Country Insights")
-
     country_runs = df.groupby("Country")["Runs"].sum().reset_index()
-
     fig= px.pie(country_runs,names="Country",values="Runs") 
-
     st.plotly_chart(fig,use_container_width=True)
+
+
+    country_select=st.selectbox("Select Country", df["Country"].unique())
+    cdata=df[df["Country"]==country_select]
+    fig_runs=px.pie(
+        cdata,
+        names="Player",
+        values="Runs"
+    )
+
+    st.plotly_chart(fig_runs,use_container_width=True)
+
 
 
 #-------------Comparison--------------------------
